@@ -1,0 +1,182 @@
+# Get necessary packages
+install.packages("tidyverse")
+install.packages("readxl")
+install.packages("googlesheets4")
+install.packages("googledrive")
+install.packages("GGally")
+install.packages("taxize")
+install.packages("reactable")
+
+
+library("tidyverse")
+library("googlesheets4")
+library("googledrive")
+library("readxl")
+library("GGally")
+library("taxize")
+library("reactable")
+
+#Read in data 
+
+#Download file to a local directory (SET YOUR OWN!!!)
+sheet <- "https://docs.google.com/spreadsheets/d/1VYMvHk7b_GcVFxCLYt4GUyUIMfrgWasQT7uy6aE0_ms/edit#gid=1570965423"
+drive_download(sheet, path = "C:/Users/Timothy Muthama/OneDrive/Documents/Third Year/First Semester/BIO3018F/Jasper/Jasper prac", overwrite = TRUE)
+?read_xlsx
+
+traits <- read_xlsx("C:/Users/Timothy Muthama/OneDrive/Documents/Third Year/First Semester/BIO3018F/Jasper/Jasper prac/TraitLabel2024.xlsx","TraitData")
+fire <- read_xlsx("C:/Users/Timothy Muthama/OneDrive/Documents/Third Year/First Semester/BIO3018F/Jasper/Jasper prac/TraitLabel2024.xlsx","Flammability")
+taxonomy <- read_xlsx("C:/Users/Timothy Muthama/OneDrive/Documents/Third Year/First Semester/BIO3018F/Jasper/Jasper prac/TraitLabel2024.xlsx","AcceptedSpecies")
+site <- read_xlsx("C:/Users/Timothy Muthama/OneDrive/Documents/Third Year/First Semester/BIO3018F/Jasper/Jasper prac/TraitLabel2024.xlsx","SiteData")
+
+#Summury of the site data
+
+site %>%
+  mutate(
+    CanopyCover = 100 - 4.16*Densiometer,
+    Herbivory = as.numeric(factor(`Herbivory (A/L/M/H)`, levels = c("A","L","M","H")))-1,
+    `Evidence of fire` = as.numeric(factor(`Dead skeletons or charcoal (A/L/M/H)`, levels = c("A","L","M","H")))-1) %>%
+  pivot_longer(cols = c("CanopyCover", "Herbivory", "Dung", "Trampling", "SoilPH", "Bare soil (%)", "Infiltration (s)", "Ticks (/10)", "Evidence of fire", "Termite mounds")) %>%
+  ggplot(aes(y = value, x = SiteName)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  facet_wrap(vars(name), nrow = 3, scales = "free")
+
+# Summarise of species traits - morphometrics
+
+# Leaf traits
+
+traits <- traits %>%
+  group_by(Taxon) %>%
+  summarise(
+    SppCode = first(names(sort(table(SppCode), decreasing = TRUE))),
+    Site = first(names(sort(table(SiteName), decreasing = TRUE))),
+    `Cover at site (%)` = mean(`Cover at site (%)`, na.rm = T),
+    `Growth form` = factor(first(names(sort(table(`Growth form`), decreasing = TRUE))), levels = c("Graminoid", "Shrub", "Tree")),
+    `Height (cm)` = mean(`Height (cm)`, na.rm = T),
+    `Leaf length (mm)` = mean(`Mean leaf length (mm)`, na.rm = T),
+    `Leaf width (mm)` = mean(`Mean leaf width (mm)`, na.rm = T),
+    LMA = mean(`Dry weight (g)`, na.rm = T)/mean(`Leaf area (cm2)`),
+    LDMC = mean(`Dry weight (g)`, na.rm = T)/mean(`Wet weight (g)`),
+    `Dead material (%)` = mean(`Dead material (%)`, na.rm = T),
+    Caginess = factor(toupper(first(names(sort(table(Cageyness), decreasing = TRUE)))), levels = c("L", "M", "H")),
+    Herbivory = factor(toupper(first(names(sort(table(`Herbivore damage`), decreasing = TRUE)))), levels = c("L", "M")),
+    `Leaf strength` = factor(first(names(sort(table(`Leaf strength`), decreasing = TRUE))), levels = c("L", "M", "H")),
+    `Phenolics` = factor(first(names(sort(table(`Phenolics`), decreasing = TRUE))), levels = c("A", "L", "M", "H"))
+  )
+
+
+ 
+
+# Summarise of species traits - morphometrics
+
+# Flammability
+fire <- fire %>%
+  group_by(SppCode) %>%
+  summarise(
+    `Max T (C)` = mean(`Max T (C)`, na.rm = T),
+    `Burning time BT (s)` = mean(`Burning time BT (s)`, na.rm = T),
+    `Length burnt BL (cm)` = mean(`Length burnt BL (cm)`, na.rm = T),
+    `Biomass Burnt BB (%)` = mean(`Biomass Burnt BB (%)`, na.rm = T)
+  )
+
+# Join traits into one
+data <- left_join(traits, fire)
+data <- left_join(data, taxonomy)
+#Taxonomic classification
+
+data$Taxon <- data$Taxon %>% str_replace_all(c("Elytropappus rhinocerotis" = "Dicerothamnus rhinocerotis", "Rapanea melanophloeos" = "Myrsine melanophloeos"))
+taxaclass <- classification(data$Taxon, db = "ncbi")
+
+tree <- class2tree(taxaclass)
+plot(tree)
+lines(x=c(24,24),y=c(0,25),lwd=2)
+
+# Extract and merge higher taxonomic ranks
+tclass <- tree$classification %>% select(norank_91835, norank_4734, norank_91836, norank_2821351, norank_71274) %>%
+  unite(col = "TaxonClass", na.rm = T)
+
+# Group Proteaceae
+tclass[which(rownames(tclass) %in% c("Aulax umbellata", "Leucadendron salignum", "Mimetes cucullatus", "Protea neriifolia", "Protea repens")),1] <- "proteaceae"
+
+# tclass <- cutree(as.hclust(ape::multi2di(tree$phylo)), k = 6) #Another way to do it based on branches
+# Combine data
+
+data <- left_join(data, data.frame(TaxonClass = tclass[,1], Taxon = rownames(tclass)))
+reactable(data)
+?reactable
+# Creating sets of variables for comparisons in analyses
+
+# continuous morphometric traits
+cont_trts <- c("Height (cm)", "Leaf length (mm)", "Leaf width (mm)", "LMA", "LDMC", "Dead material (%)")
+
+# discrete morphometric traits
+disc_trts <- c("Growth form", "Caginess", "Herbivory", "Leaf strength", "Phenolics")
+
+# flammability traits (continuous)
+flammability <- c("Max T (C)", "Burning time BT (s)", "Length burnt BL (cm)", "Biomass Burnt BB (%)")
+
+# Plant traits: within continuous morphometric traits
+
+data %>%  ggpairs(cont_trts)
+
+# Plant traits: continuous vs discrete
+
+data %>% ggduo(disc_trts, cont_trts)
+
+# Plant traits: continuous by site
+
+# unweighted
+data %>% ggduo("Site", cont_trts)
+
+# weighted by % cover of species
+data %>% ggduo("Site", cont_trts, mapping = ggplot2::aes(weight = `Cover at site (%)`))
+
+# Plant traits: by TaxonClass
+data %>% ggduo(columnsX = "TaxonClass", columnsY = cont_trts)
+
+
+# Plant traits: Discrete by site
+
+# unweighted
+data %>% ggduo("Site", disc_trts)
+
+# weighted by % cover of species
+data %>% ggduo("Site", disc_trts, mapping = ggplot2::aes(weight = `Cover at site (%)`))
+
+# Flammability traits: within the different biomes
+
+data %>% ggpairs(flammability, mapping = ggplot2::aes(colour = Site))
+
+# Flamability by site
+
+data %>% ggduo("Site", flammability)
+
+# weighted by %x cover of species
+data %>%
+  ggduo("Site", flammability,
+        mapping = ggplot2::aes(weight = `Cover at site (%)`))
+
+# Flammability by TaxonClass
+
+data %>% ggduo(columnsX = "TaxonClass", columnsY = flammability)
+
+# Flammability by species
+
+data %>%
+  select(all_of(c("Taxon", "Site", flammability))) %>%
+  pivot_longer(cols = flammability) %>%
+  ggplot(aes(y = value, x = fct_reorder(Taxon, as.numeric(as.factor(Site))), fill = Site)) +
+  geom_col() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  facet_wrap(vars(name), scales = "free") +
+  xlab("Species")
+
+# Flammability vs discrete traits: unweighted vs weighted
+
+data %>% ggduo(disc_trts, flammability)
+
+data %>% ggduo(disc_trts, flammability, mapping = ggplot2::aes(weight = `Cover at site (%)`))
+
+#Flammability vs continuous traits
+
+data %>% ggpairs(c(cont_trts, flammability))

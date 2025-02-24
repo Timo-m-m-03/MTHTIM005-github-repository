@@ -1,0 +1,15 @@
+# ---- Loading packages ----
+install.packages("tidyverse")
+library("tidyverse")
+install.packages("readxl")
+library("readxl")
+
+# ---- Data clean up ----
+
+# Raw data insertion
+
+dat <- read_xlsx
+
+#---- End of data clean up ----
+
+# ---- Data visuilisation ----

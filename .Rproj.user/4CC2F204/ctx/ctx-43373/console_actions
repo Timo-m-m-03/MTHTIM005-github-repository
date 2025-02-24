@@ -1,0 +1,42 @@
+{
+    "type": [
+        2,
+        2,
+        0,
+        1,
+        0,
+        1,
+        3,
+        2,
+        0,
+        1,
+        2,
+        2,
+        2,
+        0,
+        1,
+        0,
+        1,
+        2
+    ],
+    "data": [
+        "\nR version 4.4.2 (2024-10-31 ucrt) -- \"Pile of Leaves\"\nCopyright (C) 2024 The R Foundation for Statistical Computing\nPlatform: x86_64-w64-mingw32/x64\n\nR is free software and comes with ABSOLUTELY NO WARRANTY.\nYou are welcome to redistribute it under certain conditions.\nType 'license()' or 'licence()' for distribution details.\n\n  Natural language support but running in an English locale\n\nR is a collaborative project with many contributors.\nType 'contributors()' for more information and\n'citation()' on how to",
+        " cite R or R packages in publications.\n\nType 'demo()' for some demos, 'help()' for on-line help, or\n'help.start()' for an HTML browser interface to help.\nType 'q()' to quit R.\n\n",
+        "> ",
+        "# ---- Loading packages ----",
+        "> ",
+        "install.packages(\"tidyverse\")",
+        "Installing package into ‘C:/Users/Timothy Muthama/AppData/Local/R/win-library/4.4’\n(as ‘lib’ is unspecified)\ntrying URL 'https://cran.rstudio.com/bin/windows/contrib/4.4/tidyverse_2.0.0.zip'\nContent type 'application/zip' length 431651 bytes (421 KB)\ndownloaded 421 KB\n\n",
+        "package ‘tidyverse’ successfully unpacked and MD5 sums checked\n\nThe downloaded binary packages are in\n\tC:\\Users\\Timothy Muthama\\AppData\\Local\\Temp\\Rtmp4cv4Tn\\downloaded_packages\n",
+        "> ",
+        "library(\"tidyverse\")",
+        "── \u001B[1mAttaching core tidyverse packages\u001B[22m ──────────────────────────────── tidyverse 2.0.0 ──\n\u001B[32m✔\u001B[39m \u001B[34mdplyr    \u001B[39m 1.1.4     \u001B[32m✔\u001B[39m \u001B[34mreadr    \u001B[39m 2.1.5\n\u001B[32m✔\u001B[39m \u001B[34mforcats  \u001B[39m 1.0.0     \u001B[32m✔\u001B[39m \u001B[34mstringr  \u001B[39m 1.5.1\n\u001B[32m✔\u001B[39m \u001B[34mggplot2  \u001B[39m 3.5.1     \u001B[32m✔\u001B[39m \u001B[34mtibble   \u001B[39m 3.2.1\n\u001B[32m✔\u001B[39m \u001B[34mlubridate\u001B[39m 1.9.3     \u001B[32m✔\u001B[39m \u001B[34mtidyr    \u001B[39m 1.3.1\n\u001B[32m�",
+        "��\u001B[39m \u001B[34mpurrr    \u001B[39m 1.0.2     \n── \u001B[1mConflicts\u001B[22m ────────────────────────────────────────────────── tidyverse_conflicts() ──\n\u001B[31m✖\u001B[39m \u001B[34mdplyr\u001B[39m::\u001B[32mfilter()\u001B[39m masks \u001B[34mstats\u001B[39m::filter()\n\u001B[31m✖\u001B[39m \u001B[34mdplyr\u001B[39m::\u001B[32mlag()\u001B[39m    masks \u001B[34mstats\u001B[39m::lag()\n\u001B[36mℹ\u001B[39m Use the \u001B]8;;http://conflicted.r-lib.org/\u0007conflicted package\u001B]8;;\u0007 to force all conflicts to",
+        " become errors\n",
+        "> ",
+        "library(\"readxl\")",
+        "> ",
+        "install.packages(\"readxl\")",
+        "Error in install.packages : Updating loaded packages\n\nRestarting R session...\n\n"
+    ]
+}

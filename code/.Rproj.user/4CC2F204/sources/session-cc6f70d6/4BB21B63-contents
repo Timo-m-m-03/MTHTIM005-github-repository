@@ -1,0 +1,275 @@
+#This is an R demo for STA2007, July 2023
+
+####################
+#Some basics
+####################
+
+#basic math operations
+1+1
+243/8
+x <- 240*8
+
+#functions (in packages)
+log(4)
+?log
+log(4, base = 2)
+sqrt(16)
+
+#different types of objects
+class(x)
+str(x)
+
+#vector
+x.vec <- c(1,14,6,2,4.6)
+y.sim <- rnorm(1000)
+y.sim
+
+?rnorm
+y.sim2 <- rnorm(1000,mean = 10, sd = 2)
+y.sim2
+
+y.sim2 <- rnorm(1000,mean = 10, sd = 2)
+y.sim2
+
+set.seed(2023)
+y.sim2 <- rnorm(1000,mean = 10, sd = 2)
+y.sim2
+
+#seq
+z.seq <- seq(from = 5, to = 500, by =5)
+z.seq
+?seq
+seq(from = 5, to = 500, length = 1000)
+
+L1 <- c(1,2,3,4,"Savannah",TRUE)
+class(L1)
+str(L1)
+L1
+
+#lists (can store different yepes of objects)
+L2 <- list(1,2,3,4,"Savannah", TRUE)
+class(L2)
+str(L2)
+L2
+
+#basic subsetting
+str(y.sim)
+y.sim[1:10]
+y.sim[51:60]
+y.sim[y.sim<0]
+y.sim<0
+
+#slightly advanced bit
+L2[4] ; L2[5] ; L2[6]
+class(L2[4]) ; class(L2[5]) ; class(L2[6])
+L2[1] + L2[4]
+
+L2[[4]] ; L2[[5]] ; L2[[6]]
+class(L2[[4]]) ; class(L2[[5]]) ; class(L2[[6]])
+L2[[1]] + L2[[4]]
+
+####################
+#data frames
+####################
+
+iris
+dat <- iris
+str(dat)
+head(dat)
+tail(dat)
+summary(dat)
+
+#referencing variables
+summary(Sepal.Length)
+summary(dat$Sepal.Length)
+levels(dat$Species)
+
+attach(dat)
+summary(Sepal.Length)
+
+#use attach with extreme caution!
+mean(Sepal.Length)
+which(Sepal.Length == max(Sepal.Length))
+dat <- dat[-132,]
+mean(Sepal.Length)
+mean(dat$Sepal.Length)
+detach(dat)
+
+dat <- iris
+
+#back to subsetting
+
+dim(dat)
+dat[132,]
+dat[132,5]
+dat[132,1:2]
+dat[,1]
+dat[,"Sepal.Length"]
+
+#subsetting to extract setosa flowers
+dat
+setosa.dat <- dat[1:50,]
+
+dat$Species=="setosa"
+setosa.dat <- dat[dat$Species=="setosa",]
+setosa.dat <- dat[dat$Species=="Setosa",]
+
+setosaLarge.dat <- dat[dat$Species=="setosa" & dat$Sepal.Length>4.5 ,]
+setosavirg.dat <- dat[dat$Species=="setosa" | dat$Species == "virginica" ,]
+
+dat[dat$Species=="setosa",1:2]
+
+####################
+#reading data into R
+####################
+getwd()
+dir()
+setwd("D:/STA2007S/Data")
+
+dir()
+
+test <- read.csv("iris.csv")
+head(test)
+
+test2 <- read.csv("iris2.csv")
+
+?read.csv
+
+test2 <- read.csv("iris2.csv", sep=";", dec = ",")
+
+#RData objects
+save(L2, file = "ArbTest.RData")
+rm(L2)
+load("ArbTest.RData")
+
+rm(list=ls())
+load("introstat.RData")
+students <- ch1eg1a
+plot(students$GMAT ~ students$degree)
+
+####################
+#plotting
+####################
+
+?plot
+plot(x = 1:10, y =2:11)
+plot(x = 1:10, y =2:11, main = "A title")
+?par
+plot(x = 1:10, y =2:11, main = "A title", xlim = c(0,10), ylim = c(0,10))
+plot(x = 1:10, y =2:11, main = "A title", xlim = c(0,10), ylim = c(0,10),
+     xlab = "X axis", ylab = "Y Axis")
+plot(x = 1:10, y =2:11, main = "A title", xlim = c(0,10), ylim = c(0,10),
+     xlab = "X axis", ylab = "Y Axis", pch = 16)
+
+#plotting from data frame
+dat <- iris
+plot(x = dat$Sepal.Length, y = dat$Sepal.Width)
+plot(dat$Sepal.Width ~ dat$Sepal.Length, pch = 16)
+plot(Sepal.Width ~ Sepal.Length, pch = 16, data = dat)
+
+#improve aesthetics
+plot(Sepal.Width ~ Sepal.Length, pch = 16, data = dat, xlab = "Sepal Length (mm)",
+     ylab = "Sepal Width (mm)")
+plot(Sepal.Width ~ Sepal.Length, pch = 16, data = dat, xlab = "Sepal Length (mm)",
+     ylab = "Sepal Width (mm)", cex = 0.8)
+
+#colour points by species
+plot(Sepal.Width ~ Sepal.Length, pch = 16, data = dat, xlab = "Sepal Length (mm)",
+     ylab = "Sepal Width (mm)", col = "red")
+
+dat$Species
+as.numeric(dat$Species)
+
+plot(Sepal.Width ~ Sepal.Length, pch = 16, data = dat, xlab = "Sepal Length (mm)",
+     ylab = "Sepal Width (mm)", col = as.numeric(dat$Species))
+
+plot(Sepal.Width ~ Sepal.Length, pch = 16, data = dat, xlab = "Sepal Length (mm)",
+     ylab = "Sepal Width (mm)", col = c("firebrick","limegreen","dodgerblue")[as.numeric(dat$Species)])
+
+#add a legend
+?legend
+legend("topright", legend = c("Setosa", "Versicolor", "Virginica"), pch = rep(16,3), col = c("firebrick","limegreen","dodgerblue"))
+
+#panelling plots
+par(mfrow=c(1,2))
+plot(Sepal.Width ~ Sepal.Length, pch = 16, data = dat, xlab = "Sepal Length (mm)",
+     ylab = "Sepal Width (mm)", col = as.numeric(dat$Species))
+plot(Petal.Width ~ Petal.Length, pch = 16, data = dat, xlab = "Petal Length (mm)",
+     ylab = "Petal Width (mm)", col = as.numeric(dat$Species))
+
+hist(dat$Sepal.Length)
+dev.off()
+
+hist(dat$Sepal.Length)
+
+?hist
+hist(dat$Sepal.Length, xlab = "Sepal Length (mm)", 
+     main = "Histogram of Sepal Length")
+hist1 <- hist(dat$Sepal.Length, xlab = "Sepal Length (mm)", 
+              main = "Histogram of Sepal Length")
+hist1
+
+####################
+#Modelling
+####################
+?lm
+lm(dat$Sepal.Width ~ dat$Sepal.Length)
+lm(dat$Sepal.Width ~ dat$Sepal.Length + dat$Species)
+
+#use data argument
+mod1 <- lm(Sepal.Width ~ Sepal.Length, data = dat)
+mod1
+summary(mod1)
+
+plot(Sepal.Width ~ Sepal.Length, pch = 16, data = dat, xlab = "Sepal Length (mm)",
+     ylab = "Sepal Width (mm)", col = as.numeric(dat$Species))
+abline(mod1)
+
+mod2 <- lm(Sepal.Width ~ Sepal.Length + Species, data = dat)
+summary(mod2)
+
+plot(Sepal.Width ~ Sepal.Length, pch = 16, data = dat, xlab = "Sepal Length (mm)",
+     ylab = "Sepal Width (mm)", col = as.numeric(dat$Species))
+
+lines(dat$Sepal.Length[1:50],fitted(mod2)[1:50], col = 1,lwd = 2)
+lines(dat$Sepal.Length[51:100],fitted(mod2)[51:100], col = 2,lwd = 2)
+lines(dat$Sepal.Length[101:150],fitted(mod2)[101:150], col = 3,lwd = 2)
+
+#predict
+?predict
+?predict.lm
+
+mod1
+predict(mod1)
+predict(mod1, newdata = data.frame(Sepal.Length =5))
+predict(mod1, newdata = data.frame(Sepal.Length =5), se.fit = T)
+predict(mod1, newdata = data.frame(Sepal.Length =5), interval = "confidence")
+predict(mod1, newdata = data.frame(Sepal.Length =5), interval = "prediction")
+
+#predict from mod2, first for setosa only
+mod2
+
+data.frame(Sepal.Length = seq(min(dat$Sepal.Length[dat$Species=="setosa"]),max(dat$Sepal.Length[dat$Species=="setosa"]), length = 10), Species  = rep("setosa",10))
+df.setosa <- data.frame(Sepal.Length = seq(min(dat$Sepal.Length[dat$Species=="setosa"]),max(dat$Sepal.Length[dat$Species=="setosa"]), length = 10), Species  = rep("setosa",10))
+preds1 <- predict(mod2,newdata = df.setosa, se.fit = T)
+
+df.vers <- data.frame(Sepal.Length = seq(min(dat$Sepal.Length[dat$Species=="versicolor"]),max(dat$Sepal.Length[dat$Species=="versicolor"]), length = 10), Species  = rep("versicolor",10))
+preds2 <- predict(mod2,newdata = df.vers, se.fit = T)
+
+df.virg <- data.frame(Sepal.Length = seq(min(dat$Sepal.Length[dat$Species=="virginica"]),max(dat$Sepal.Length[dat$Species=="virginica"]), length = 10), Species  = rep("virginica",10))
+preds3 <- predict(mod2,newdata = df.virg, se.fit = T)
+
+plot(Sepal.Width ~ Sepal.Length, pch = 16, data = dat, xlab = "Sepal Length (mm)",
+     ylab = "Sepal Width (mm)", col = as.numeric(dat$Species))
+lines(seq(min(dat$Sepal.Length[dat$Species=="setosa"]),max(dat$Sepal.Length[dat$Species=="setosa"]), length = 10), preds1$fit, col = 1)
+lines(seq(min(dat$Sepal.Length[dat$Species=="versicolor"]),max(dat$Sepal.Length[dat$Species=="versicolor"]), length = 10), preds2$fit, col = 2)
+lines(seq(min(dat$Sepal.Length[dat$Species=="virginica"]),max(dat$Sepal.Length[dat$Species=="virginica"]), length = 10), preds3$fit, col = 3)
+
+#bug with predict using dollar sign referencing
+mod1 <- lm(dat$Sepal.Width ~ dat$Sepal.Length)
+predict(mod1, newdata = data.frame(Sepal.Length = 5))
+predict(mod1, newdata = data.frame(dat$Sepal.Length = 5))
+
+mod1 <- lm(Sepal.Width ~ Sepal.Length, data = dat)
+predict(mod1, newdata = data.frame(Sepal.Length = 5))
+

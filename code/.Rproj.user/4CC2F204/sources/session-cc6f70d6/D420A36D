@@ -1,0 +1,27 @@
+{
+    "id": "D420A36D",
+    "path": "C:/Git repository/MTHTIM005-github-repository/code/code.R",
+    "project_path": "code.R",
+    "type": "r_source",
+    "hash": "425151988",
+    "contents": "",
+    "dirty": false,
+    "created": 1740382283679.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "58,0",
+        "scrollLine": "53"
+    },
+    "folds": "0|20|3|0|\n4|19|19|2|\n20|23|62|0|\n",
+    "lastKnownWriteTime": 1740421120,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1740421166409,
+    "read_only": false,
+    "read_only_alternatives": []
+}

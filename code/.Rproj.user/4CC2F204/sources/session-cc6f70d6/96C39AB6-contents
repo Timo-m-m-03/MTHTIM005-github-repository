@@ -1,0 +1,206 @@
+#2022 Field Camp
+###### Beach Project #######
+#### Code used from these websites: 
+#https://jcoliver.github.io/learn-r/003-intro-multivariate.html, 
+#https://jkzorz.github.io/2020/04/04/NMDS-extras.html
+#https://stu-dem.github.io/SAEON-GSN-R/Multivariate.html
+
+
+#Clear your workspace
+rm(list=ls())
+
+#Set your working directory
+setwd("C:/Users/kelly/OneDrive - University of Cape Town/Desktop/2023 field camp code")
+#import you data
+#if your data is comma delimited with 
+#   a point decimal (default for read.csv)
+data <- read.csv("environmentData.csv",header=T, sep=",", dec = ".")
+
+# OR do Excel manually:
+#Excel files
+# --> Under "Environment" tab click on "Import dataset"
+#  --> From Excel
+#   -->Under file/Url click on "Browse" and find file you want to open
+#    -->Check import options that everything is ok
+#     --> Import
+# So it will show you the code it used in the console and allow you to view the data
+
+data <- physchem_data
+
+
+###########multivariate analysis############
+#### Principle Component Analysis (PCA) #####
+# In Principal Component Analysis (PCA), a principal component is a linear combination of the original variables 
+# in a dataset. These linear combinations are created in such a way that they capture as much of the variance in 
+# the data as possible while being uncorrelated to each other. Each principal component is a new variable 
+# that represents a different direction or pattern in the data. (thanks to ChatGPT for the definition)
+
+# calculate the principle components
+## -c(1) specifies to skip the first column because that column has categorical data
+### scale=T ensures all variables are scaled to have a mean 
+#### of zero and sd of 1
+
+pca.fit <- prcomp(x = data[, -c(1)], scale. = T) 
+#Look at the results using the summary command and by assigning the output to a variable (pca.summary)
+pca.summary <- summary(pca.fit)
+ls(pca.summary) #produces a list of objects in the summary
+
+# We want to know what the important factors are from the PCS (which ones explain most of the variation)
+# AND what these factors say about the variation in our data
+
+pca.summary$importance
+
+# Proportion of Variance shows how much variance is described by each component
+# NOTE: PC1 explains the most (46%) variance, and PC2 the second most etc
+# If we combine the first 3 principle components, they explain ~70% of the total variance
+
+# But what does this mean? What are the principle components explaining?
+# look at the rotation object from the summary  you can identify which variables have the most 
+# significant impact on each component and how they are positively or negatively associated with it.
+# Higher absolute values in a cell indicate a stronger influence of that variable on the 
+# respective principal component.
+
+pca.summary$rotation
+
+# So in PC1, Diatoms, Oxygen and Slope have the strongest influence 
+
+biplot(x = pca.fit)
+
+# This is not the nicest looking plot, so we try another option:
+
+plot(x=pca.fit$x[,1],
+     y = pca.fit$x[,2],
+     xlab = "PC 1",
+     ylab = "PC 2")
+
+#PCA based on location (Site)
+locations <- unique(data$Site)
+locations
+# Assign each location a different colour
+legend.cols <- c("green", "blue")
+pt.cols <- rep(x = legend.cols[1], length = nrow(data))
+pt.cols[data$Site == locations[2]] <- legend.cols[2]
+
+#plot
+windows()
+plot(x = pca.fit$x[, 1],
+     y = pca.fit$x[, 2],
+     xlab = "PC 1",
+     ylab = "PC 2",
+     pch = 19,
+     col = pt.cols)
+legend("bottomright", 
+       legend = locations, 
+       pch = 19, 
+       col = legend.cols, 
+       cex = 0.8)
+#######
+
+# Now we will make the plot look nicer (the code is a bit more complicated though)
+# The important thing for now is to understand how to interpret the output
+
+# Load these 2 packages
+library(vegan)
+library(ggplot2)
+
+## NMDS (non-metric Multi-dimensional Scaling) code
+# Condenses multiple variables into a 2d representation/ordination
+# The closer any 2 points are, the more similar they are with respect to the multiple variables involved
+
+#subset data into environment variables and community data
+com = data[,1]
+env = data[, 1:7]
+
+#the community data needs to be converted from a dataframe to a matrix convert com into matrix using the vegan package
+m_com = as.matrix(data[,-c(1)])
+
+# Generate a basic nmds plot
+# bray is the distance measure
+nmds = metaMDS(m_com, distance = "bray")
+nmds
+windows()
+plot(nmds)
+
+en = envfit(nmds, env, permutations = 999)
+
+plot(en)
+
+# But...We can do better!
+# ggplot2 makes nicer looking plots
+# obtain the coordinates for the NMDS1 and NMDS2 axes and put them in a dataframe (data.scores)
+data.scores = as.data.frame(scores(nmds)$sites)
+data.scores$Site = data$Site
+
+
+#extract continuous and categorical variables
+en_coord_cont = as.data.frame(scores(en, "vectors")) * ordiArrowMul(en)
+en_coord_cat = as.data.frame(scores(en, "factors")) *ordiArrowMul(en)
+
+# Plot NMDS using ggplot
+windows()
+gg = ggplot(data = data.scores, aes(x = NMDS1, y = NMDS2)) +
+  geom_point(data = data.scores, aes(colour = Site), size = 3, alpha = 0.5) + 
+  scale_colour_manual(values = c("orange", "steelblue")) + 
+  theme(axis.title = element_text(size = 10, face = "bold", colour = "grey30"), 
+        panel.background = element_blank(), panel.border = element_rect(fill = NA, colour = "grey30"), 
+        axis.ticks = element_blank(), axis.text = element_blank(), legend.key = element_blank(), 
+        legend.title = element_text(size = 10, face = "bold", colour = "grey30"),
+        legend.text = element_text(size = 9, colour = "grey30")) +
+  labs(colour = "Site")
+gg
+
+#NMDS plot with env data
+windows()
+gg = ggplot(data = data.scores, aes(x = NMDS1, y = NMDS2)) + 
+  geom_point(data = data.scores, aes(colour = Site), size = 3, alpha = 0.5) + 
+  scale_colour_manual(values = c("orange", "steelblue"))  + 
+  geom_segment(aes(x = 0, y = 0, xend = NMDS1/2, yend = NMDS2/2), 
+               data = en_coord_cont, size =1, alpha = 0.5, colour = "grey30") +
+  geom_text(data = en_coord_cont, aes(x = NMDS1/2, y = NMDS2/2), colour = "grey30", 
+                  fontface = "bold", label = row.names(en_coord_cont)) + 
+  theme(axis.title = element_text(size = 10, face = "bold", colour = "grey30"), 
+        panel.background = element_blank(), panel.border = element_rect(fill = NA, colour = "grey30"), 
+        axis.ticks = element_blank(), axis.text = element_blank(), legend.key = element_blank(), 
+        legend.title = element_text(size = 10, face = "bold", colour = "grey30"), 
+        legend.text = element_text(size = 9, colour = "grey30")) + 
+  labs(colour = "Site")
+
+gg
+
+###### Ordination Plot and SIMPER analysis #####
+##Separate the continuous and categorical variables into subsets
+
+cont <- data[,c(2:7)]
+cat <- data[,c(1)]
+
+# hellinger is the Hellinger distance between 2 random samples whose underlying distributions are continuous
+
+cont_data_hel <- decostand(cont,  method = "hellinger")
+envi.ca <- cca(cont_data_hel)
+
+#extract data
+summary(envi.ca)
+
+head(cat)
+
+#incorporate the descriptive variables into the analysis
+envi_cca <- cca(cont_data_hel~Site, data = cat)
+
+#the effect of terms on the distribution of the species variables
+anova(envi_cca, by = "terms")
+
+## build the distance matrix:
+cont_data_bray <- vegdist(cont)
+## carry out the analysis using the new distance matrix with group (or treatment) being the site variable within the fence_envi dataset:
+cont_bd <- betadisper(cont_data_bray, group = cat$Site)
+## then we can simply run a TukeyHSD test on fence_bd to assess the difference between the two sites. #
+#If the confidence intervals do not cross zero then our associated p-value should be < 0.05:
+TukeyHSD(cont_bd)
+
+## here we need to tell the analysis to run permutations in order to produce a p-value. 
+#This p-value will describe the probability of getting a larger or equal average contribution to overall dissimilarity (the second column) 
+envi_simper <- simper(cont, group = cat$Site, permutations = 999)
+summary(envi_simper)
+
+#This tells us that slope, oxygen and diatoms are the most NB variables in explaining the differences between the 2 sites
+
