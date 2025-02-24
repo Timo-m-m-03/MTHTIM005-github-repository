@@ -1,0 +1,43 @@
+Location,Clade,Native/Exotic,Deciduous/Evergreen,Plant type (vine/tree/shrub),Family,Species,Burn level
+Campus,Angiosperm,Exotic,Deciduous,Tree,Altingiaceae,Liquidambar styraciflua,Didn't burn
+Campus,Angiosperm,Exotic,Deciduous,Tree,Fabaceae,Tipuana tipu,Didn't burn
+Campus,Angiosperm,Exotic,Deciduous,Tree,Fagaceae,Quercus palustris,Didn't burn
+Campus,Angiosperm,Exotic,Deciduous,Tree,Moraceae,Ficus microcarpa,Partially burned
+Campus,Angiosperm,Exotic,Deciduous,Tree,Salicaceae,Populus sp.,Partially burned
+Campus,Angiosperm,Exotic,Deciduous,Vine,Vitaceae,Parthenocissus tricuspidata,Burned
+Campus,Angiosperm,Exotic,Evergreen,Shrub,Apocynaceae,Nerium oleander,Didn't burn
+Campus,Angiosperm,Exotic,Evergreen,Tree,Arecaceae,Phoenix canariensis,Burned
+Campus,Angiosperm,Exotic,Evergreen,Tree,Casuarinaceae,Casuarina cunninghamiana,Partially burned
+Campus,Angiosperm,Exotic,Evergreen,Tree,Fabaceae,Acacia melanoxylon,Didn't burn
+Campus,Angiosperm,Exotic,Evergreen,Tree,Roseaceae,Cotoneaster lacteus,Didn't burn
+Campus,Angiosperm,Exotic,Evergreen,Tree,Roseaceae,Pyracantha angustifolia,Didn't burn
+Campus,Angiosperm,Exotic,Evergreen,Vine,Araliaceae,Hedera canariensis,Didn't burn
+Campus,Angiosperm,Exotic,Evergreen,Vine,Bignoniaceae,Pyrostegia venusta,Burned
+Campus,Angiosperm,Native,Deciduous,Tree,Cannabaceae,Celtis africana,Didn't burn
+Campus,Angiosperm,Native,Evergreen,Shrub,Apocynaceae,Carissa bispinosa,Didn't burn
+Campus,Angiosperm,Native,Evergreen,Shrub,Malvaceae,Grewia bicolor,Didn't burn
+Campus,Angiosperm,Native,Evergreen,Tree,Achariaceae,Kiggelaria africana,Didn't burn
+Campus,Angiosperm,Native,Evergreen,Tree,Anacardiaceae,Harpephyllum caffrum ,Didn't burn
+Campus,Angiosperm,Native,Evergreen,Tree,Anacardiaceae,Searsia lancea,Didn't burn
+Campus,Angiosperm,Native,Evergreen,Tree,Asteraceae,Tarchonanthus comphoratus,Didn't burn
+Campus,Angiosperm,Native,Evergreen,Tree,Fabaceae,Bauhinia galpinii,Didn't burn
+Campus,Angiosperm,Native,Evergreen,Tree,Fabaceae,Virgilia variegata,Burned
+Campus,Angiosperm,Native,Evergreen,Tree,Moraceae,Ficus natalensis,Partially burned
+Campus,Angiosperm,Native,Evergreen,Tree,Myrtaceae,Syzygium cordatum,Burned + partially burned
+Campus,Angiosperm,Native,Evergreen,Tree,Ochnaceae,Ochna serrulata,Didn't burn
+Campus,Angiosperm,Native,Evergreen,Tree,Oleaceae,Olea capensis,Didn't burn
+Campus,Angiosperm,Native,Evergreen,Tree,Oleaceae,Olea europaea subsp. cuspidata,Partially burned
+Campus,Angiosperm,Native,Evergreen,Tree,Sapotaceae,Sideroxylon inerme,Didn't burn
+Campus,Gymnosperm,Exotic,Evergreen,Tree,Cupressaceae,Cupressus sempervirens,Partially burned
+Campus,Gymnosperm,Exotic,Evergreen,Tree,Cupressaceae,Cupressus sp.,Partially burned
+Campus,Gymnosperm,Exotic,Evergreen,Tree,Pinaceae,Cedrus atlantica,Partially burned
+Campus,Gymnosperm,Exotic,Evergreen,Tree,Pinaceae,Pinus pinea,Partially burned
+Campus,Gymnosperm,Native,Evergreen,Tree,Cycadaceae,Encephalartos sp.,Burned
+Campus,Gymnosperm,Native,Evergreen,Tree,Podocarpaceae,Podocarpus latifolius,Burned + not burned
+Rhodes Memorial,Angiosperm,Exotic,Deciduous,Tree,Fagaceae,Castanea sativa,Not a burner
+Rhodes Memorial,Angiosperm,Native,Evergreen,Shrub,Fabaceae,Indigofera cystioides,Burner
+Rhodes Memorial,Angiosperm,Native,Evergreen,Shrub,Fabaceae,Podalyria calyptrata,Burner
+Rhodes Memorial,Angiosperm,Native,Evergreen,Tree,Celastraceae,Maytenus oleoides,Not a burner
+Rhodes Memorial,Angiosperm,Native,Evergreen,Tree,Proteaceae,Leucadendron argentuem,Burner
+Rhodes Memorial,Angiosperm,Native,Evergreen,Tree,Rubiaceae,Canthium inerme,Not a burner
+Rhodes Memorial,Angiosperm,Native,Evergreen,Vine,Fabaceae,Bolusafra bituminosa,Burner
